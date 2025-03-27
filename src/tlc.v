@@ -10,15 +10,16 @@ module tt_um_tlc(
   output wire [7:0] uo_out,
   input wire [7:0] uio_in,
   output wire [7:0] uio_out,
-  output wire [7:0] uio_oe
+  output wire [7:0] uio_oe,
   input clk,
   input ena,
   input rst_n
 );
+  reg [2:0] light_farm, light_highway;
   
   wire C = ui_in[0];
-  reg light_farm = uo_out[0];
-  reg light_highway = uo_out[1];
+  assign uo_out[0:2] = light_farm;
+  assign uo_out[3:5] = light_highway;
 
     // State encoding
     parameter HGRE_FRED = 2'b00,  // Highway Green/Farm Red
@@ -70,6 +71,9 @@ module tt_um_tlc(
                 light_farm = 3'b010;
                 next_state = (delay_3s) ? HGRE_FRED : HRED_FYEL;
             end
+          
+          default : next_state = HGRE_FRED;
+              
         endcase
     end
      
