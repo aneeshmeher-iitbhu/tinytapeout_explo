@@ -6,13 +6,19 @@
 `default_nettype none
 
 module tt_um_tlc(   
-     output reg [2:0] light_highway,
-     output reg [2:0] light_farm,
-     input C,        // Sensor input
-     input clk,      // Clock
-     input rst_n,     // Active-low reset
-     input ena
+  input wire [7:0] ui_in,
+  output wire [7:0] uo_out,
+  input wire [7:0] uio_in,
+  output wire [7:0] uio_out,
+  output wire [7:0] uio_oe
+  input clk,
+  input ena,
+  input rst_n
 );
+  
+  wire C = ui_in[0];
+  reg light_farm = uo_out[0];
+  reg light_highway = uo_out[1];
 
     // State encoding
     parameter HGRE_FRED = 2'b00,  // Highway Green/Farm Red
@@ -66,5 +72,5 @@ module tt_um_tlc(
             end
         endcase
     end
-
+     
 endmodule
