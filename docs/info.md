@@ -8,13 +8,13 @@ You can also include images in this folder and reference them in the markdown. E
 -->
 
 ## How it works
-
-Explain how your project works
+  The output of the Traffic light simulator we designed is attached for your reference. In the       simulation, C is the sensor signal from Farm side when which is triggered when any vehicle is      present at that side.
+  
+  Also below are the representation used for different colors of traffic light:
+  001 -> GREEN
+  010 -> YELLOW
+  100 -> RED
 
 ## How to test
+ it can be tested by using a verilog test bench
 
-Explain how to use your project
-
-## External hardware
-
-List external hardware used in your project (e.g. PMOD, LED display, etc), if any
