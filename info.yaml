@@ -22,7 +22,7 @@ project:
 # This section is for the datasheet/website. Use descriptive names (e.g., RX, TX, MOSI, SCL, SEG_A, etc.).
 pinout:
   # Inputs
-  ui[0]: "ui_in[0]"
+  ui[0]: "C"
   ui[1]: ""
   ui[2]: ""
   ui[3]: ""
@@ -32,12 +32,12 @@ pinout:
   ui[7]: ""
 
   # Outputs
-  uo[0]: "uo_out[0]"
-  uo[1]: "uo_out[1]"
-  uo[2]: "uo_out[2]"
-  uo[3]: "uo_out[3]"
-  uo[4]: "uo_out[4]"
-  uo[5]: "uo_out[5]"
+  uo[0]: "light_farm0"
+  uo[1]: "light_farm1"
+  uo[2]: "light_farm2"
+  uo[3]: "light_highway0"
+  uo[4]: "light_highway1"
+  uo[5]: "light_highway2"
   uo[6]: ""
   uo[7]: ""
 
