@@ -16,36 +16,47 @@ async def test_traffic_light(dut):
     # Initialize signals
     dut.ena.value = 1  # REQUIRED: Enable the module
     dut.rst_n.value = 0
-    dut.ui_in.value = 0  # C sensor is at ui_in[2]
+    dut.ui_in.value = 0  # C sensor is at ui_in[0]
 
     # Reset sequence
     await ClockCycles(dut.clk, 10)
     dut.rst_n.value = 1
 
+    # Helper function to extract light states
+    def get_light_states():
+        farm_light = dut.uo_out.value & 0b00000111  # uo_out[2:0]
+        highway_light = (dut.uo_out.value >> 3) & 0b00000111  # uo_out[5:3]
+        return farm_light, highway_light
+
     # Test initial state (HGRE_FRED)
     await RisingEdge(dut.clk)
-    assert dut.uo_out[0].value == 0b001, "Highway should be Green (001)"
-    assert dut.uo_out[1].value == 0b100, "Farm should be Red (100)"
+    farm_light, highway_light = get_light_states()
+    assert highway_light == 0b001, f"Highway should be Green (001), but got {highway_light:03b}"
+    assert farm_light == 0b100, f"Farm should be Red (100), but got {farm_light:03b}"
 
     # Test sensor activation after 10 cycles
-    dut.ui_in.value = 0b00000100  # Set C (ui_in[2]) to 1
+    dut.ui_in.value = 0b00000001  # Set C (ui_in[0]) to 1
     await ClockCycles(dut.clk, 10)
-    
+
     # Verify transition to HYEL_FRED (Highway Yellow)
-    assert dut.uo_out[0].value == 0b010, "Highway should be Yellow (010)"
-    
+    farm_light, highway_light = get_light_states()
+    assert highway_light == 0b010, f"Highway should be Yellow (010), but got {highway_light:03b}"
+
     # Wait 3 cycles for HYEL_FRED -> HRED_FGRE transition
     await ClockCycles(dut.clk, 3)
-    assert dut.uo_out[0].value == 0b100, "Highway should be Red (100)"
-    assert dut.uo_out[1].value == 0b001, "Farm should be Green (001)"
+    farm_light, highway_light = get_light_states()
+    assert highway_light == 0b100, f"Highway should be Red (100), but got {highway_light:03b}"
+    assert farm_light == 0b001, f"Farm should be Green (001), but got {farm_light:03b}"
 
     # Wait 10 cycles for HRED_FGRE -> HRED_FYEL transition
     await ClockCycles(dut.clk, 10)
-    assert dut.uo_out[1].value == 0b010, "Farm should be Yellow (010)"
+    farm_light, highway_light = get_light_states()
+    assert farm_light == 0b010, f"Farm should be Yellow (010), but got {farm_light:03b}"
 
     # Wait 3 cycles for HRED_FYEL -> HGRE_FRED transition
     await ClockCycles(dut.clk, 3)
-    assert dut.uo_out[0].value == 0b001, "Highway should return to Green (001)"
-    assert dut.uo_out[1].value == 0b100, "Farm should return to Red (100)"
+    farm_light, highway_light = get_light_states()
+    assert highway_light == 0b001, f"Highway should return to Green (001), but got {highway_light:03b}"
+    assert farm_light == 0b100, f"Farm should return to Red (100), but got {farm_light:03b}"
 
     dut._log.info("Test completed successfully")
