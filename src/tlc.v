@@ -45,7 +45,6 @@ module tt_um_tlc(
       if (!rst_n) begin
           state <= HGRE_FRED;
           counter <= 0;
-          next_state <= HGRE_FRED;
       end else begin
           state <= next_state;
         counter <= (counter >= 4'd13) ? 0 : counter + 1;
