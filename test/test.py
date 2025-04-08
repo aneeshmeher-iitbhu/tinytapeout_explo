@@ -36,8 +36,8 @@ async def test_traffic_light(dut):
 
     # Test sensor activation after 10 cycles
     dut.ui_in.value = 0b00000001  # Set C (ui_in[0]) to 1
-    await ClockCycles(dut.clk, 10)
-
+    # await ClockCycles(dut.clk, 10)
+    await RisingEdge(dut.clk)
     # Verify transition to HYEL_FRED (Highway Yellow)
     farm_light, highway_light = get_light_states()
     assert highway_light == 0b010, f"Highway should be Yellow (010), but got {highway_light:03b}"
