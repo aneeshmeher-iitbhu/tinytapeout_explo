@@ -45,6 +45,7 @@ module tt_um_tlc(
       if (!rst_n) begin
           state <= HGRE_FRED;
           counter <= 0;
+          next_state <= HGRE_FRED;
       end else begin
           state <= next_state;
         counter <= (counter >= 4'd13) ? 0 : counter + 1;
@@ -52,9 +53,15 @@ module tt_um_tlc(
   end
 
  // Timing control
-  always @(posedge clk) begin
-    delay_10s <= (counter == 4'd13);  
-    delay_3s  <= (counter == 4'd3);  
+  always @(posedge clk or negedge rst_n) begin
+      if(!rst_n) begin
+        delay_10s <= 1'b0;  
+        delay_3s  <= 1'b0;  
+      end
+      else begin
+        delay_10s <= (counter == 4'd13);  
+        delay_3s  <= (counter == 4'd3);
+      end
   end
 
   // FSM combinational logic
